@@ -17,6 +17,8 @@ int main(int argc, char *argv[])
     long ip=0;
     int i=1; 
     int j=0;
+    long ip_from=0;
+    long ip_to=0;
     char output1[99]={0};
     char output2[99]={0};
     char output3[99]={0};
@@ -29,15 +31,13 @@ int main(int argc, char *argv[])
     sscanf(argv[1], "%ld.%ld.%ld.%ld",&ip0,&ip1,&ip2,&ip3);
 
     ip=ip0*256*256*256 + ip1*256*256 + ip2*256 + ip3;
-    printf("%ld\n",ip);
 
     pfichier = fopen("geoip.csv","r");
-
 
     while (feof(pfichier) != true)
     {   
         fgets(line, MAXCHAR, pfichier);
-        printf("line: %s", line);
+        //printf("line: %s", line);
         output = strtok(line, ",");
 
         i=1;
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
         while ((output != NULL)&&(i<4))
         {
             j=1;
-            printf("output: %s\n", output);
+            //printf("output: %s\n", output);
             switch (i)
             {
                 case 1:
@@ -64,7 +64,6 @@ int main(int argc, char *argv[])
                     break;
             }
             output = strtok(NULL, ",");
-
         }
         
         // suppression des guillemets, passer tout ca en fonction apres
@@ -98,17 +97,16 @@ int main(int argc, char *argv[])
         memset(output3, ' ',99);
         strcpy(output3, output_temp);
 
-        printf("output numero 1 :%s\n",output1);
-        printf("output numero 2 :%s\n",output2);
-        printf("output numero 3 :%s\n",output3);
+        ip_from=atoi(output1);
+        ip_to=atoi(output2);
 
+        if ((ip>=ip_from)&&(ip<=ip_to))
+        {
+            printf("Le pays est : %s\n",output3);
+            return 0;
+        }
         
     }    
-
-
-
-
-
 
     return 0;
 }
