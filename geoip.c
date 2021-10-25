@@ -29,60 +29,69 @@ int main(int argc, char *argv[])
     char line[MAXCHAR];
     char *output;
 
-    sscanf(argv[1], "%ld.%ld.%ld.%ld",&ip0,&ip1,&ip2,&ip3);
+    //gestion erreur argument ligne de commande
+    if (argc==2)
+    {
+        sscanf(argv[1], "%ld.%ld.%ld.%ld",&ip0,&ip1,&ip2,&ip3);
 
-    ip=ip0*256*256*256 + ip1*256*256 + ip2*256 + ip3;
+        ip=ip0*256*256*256 + ip1*256*256 + ip2*256 + ip3;
 
-    pfichier = fopen("geoip.csv","r");
+        pfichier = fopen("geoip.csv","r");
 
-    while (feof(pfichier) != true)
-    {   
-        fgets(line, MAXCHAR, pfichier);
-        //printf("line: %s", line);
-        output = strtok(line, ",");
+        while (feof(pfichier) != true)
+        {   
+            fgets(line, MAXCHAR, pfichier);
+            //printf("line: %s", line);
+            output = strtok(line, ",");
 
-        i=1;
+            i=1;
 
-        //  i<4 car analyse que les 3 premieres cellules de chaque ligne
-        while ((output != NULL)&&(i<4))
-        {
-            j=1;
-            //printf("output: %s\n", output);
-            switch (i)
+            //  i<4 car analyse que les 3 premieres cellules de chaque ligne
+            while ((output != NULL)&&(i<4))
             {
-                case 1:
-                    strcpy(output1, output);
-                    i++;
-                    break;
-                case 2:
-                    strcpy(output2, output);
-                    i++;
-                    break;
-                case 3:
-                    strcpy(output3, output);
-                    i++;
-                    break;   
-                default: ;
-                    break;
+                j=1;
+                //printf("output: %s\n", output);
+                switch (i)
+                {
+                    case 1:
+                        strcpy(output1, output);
+                        i++;
+                        break;
+                    case 2:
+                        strcpy(output2, output);
+                        i++;
+                        break;
+                    case 3:
+                        strcpy(output3, output);
+                        i++;
+                        break;   
+                    default: ;
+                        break;
+                }
+                output = strtok(NULL, ",");
             }
-            output = strtok(NULL, ",");
-        }
 
-        suppr_quot(output1);
-        suppr_quot(output2);
-        suppr_quot(output3);
+            suppr_quot(output1);
+            suppr_quot(output2);
+            suppr_quot(output3);
 
-        // convertir string en int
-        ip_from=atoi(output1);
-        ip_to=atoi(output2);
+            // convertir string en int
+            ip_from=atoi(output1);
+            ip_to=atoi(output2);
 
-        // verifier si notre ip est dans la range d'ip de la ligne qu'on analyse
-        if ((ip>=ip_from)&&(ip<=ip_to))
-        {
-            printf("Le pays est : %s\n",output3);
-            return 0;
-        } 
-    }  
+            // verifier si notre ip est dans la range d'ip de la ligne qu'on analyse
+            if ((ip>=ip_from)&&(ip<=ip_to))
+            {
+                printf("Le pays est : %s\n",output3);
+                return 0;
+            } 
+        }   
+    } else 
+    {
+        printf("Usage:\n");
+        printf("\t%s <adresse_ip>\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
     fclose(pfichier);  
     return 0;
 }
