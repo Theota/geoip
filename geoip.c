@@ -8,6 +8,8 @@
 
 /* theo tardy*/
 
+void suppr_quot();
+
 int main(int argc, char *argv[])
 {
     long ip0=0;
@@ -22,7 +24,6 @@ int main(int argc, char *argv[])
     char output1[99]={0};
     char output2[99]={0};
     char output3[99]={0};
-    char output_temp[99]={0};
 
     FILE *pfichier;
     char line[MAXCHAR];
@@ -42,6 +43,7 @@ int main(int argc, char *argv[])
 
         i=1;
 
+        //  i<4 car analyse que les 3 premieres cellules de chaque ligne
         while ((output != NULL)&&(i<4))
         {
             j=1;
@@ -65,48 +67,38 @@ int main(int argc, char *argv[])
             }
             output = strtok(NULL, ",");
         }
-        
-        // suppression des guillemets, passer tout ca en fonction apres
-        memset(output_temp, ' ',99);
-        j=1;
-        while (output1[j]!='"')
-        {
-            output_temp[j-1]=output1[j];
-            j++;
-        }
-        memset(output1, ' ',99);
-        strcpy(output1, output_temp);
 
-        memset(output_temp, ' ',99);
-        j=1;
-        while (output2[j]!='"')
-        {
-            output_temp[j-1]=output2[j];
-            j++;
-        }
-        memset(output2, ' ',99);
-        strcpy(output2, output_temp);
+        suppr_quot(output1);
+        suppr_quot(output2);
+        suppr_quot(output3);
 
-        memset(output_temp, ' ',99);
-        j=1;
-        while (output3[j]!='"')
-        {
-            output_temp[j-1]=output3[j];
-            j++;
-        }
-        memset(output3, ' ',99);
-        strcpy(output3, output_temp);
-
+        // convertir string en int
         ip_from=atoi(output1);
         ip_to=atoi(output2);
 
+        // verifier si notre ip est dans la range d'ip de la ligne qu'on analyse
         if ((ip>=ip_from)&&(ip<=ip_to))
         {
             printf("Le pays est : %s\n",output3);
             return 0;
-        }
-        
-    }    
-
+        } 
+    }  
+    fclose(pfichier);  
     return 0;
+}
+
+// fonction pour supprimer les quotations mark
+void  suppr_quot(char output[99])
+{
+    char output_temp[99]={0};
+    int j=1;
+
+    memset(output_temp, ' ',99);
+    while (output[j]!=('"'))
+    {
+        output_temp[j-1]=output[j];
+        j++;
+    }
+    memset(output, ' ',99);
+    strcpy(output,output_temp);
 }
